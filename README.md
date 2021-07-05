@@ -1,2 +1,2 @@
 # everyday-challenge
-three-hyun-hackerthon
+three-hyun-hackathon
