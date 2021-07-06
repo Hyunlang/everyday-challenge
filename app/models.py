@@ -1,7 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
 from enumfields import EnumField
 from .enums import *
-from django.contrib.auth.models import User
 
 
 class Subject(models.Model):
@@ -17,7 +17,7 @@ class Challenge(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    status = EnumField(enum=ChallengeStatus, max_length=16)
+    status = EnumField(enum=ChallengeStatus, default=ChallengeStatus.PENDING, max_length=16)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -36,6 +36,12 @@ class Post(models.Model):
     class Meta:
         pass
 
+    def get_like_count(self):
+        return Like.objects.filter(post=self).count()
+
+    def get_comment_count(self):
+        return Comment.objects.filter(post=self).count()
+
 
 class Like(models.Model):
     id = models.AutoField(primary_key=True)
@@ -50,6 +56,7 @@ class Comment(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    content = models.CharField(default='', max_length=100)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
