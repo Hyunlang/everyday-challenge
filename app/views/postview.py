@@ -22,7 +22,7 @@ class PostListView(generics.ListAPIView):
         )
         if challenge.exists():
             posts = Post.objects.filter(
-                subject=challenge.subject
+                subject=challenge[0].subject
             ).order_by('-created')
         else:
             posts = []
@@ -35,6 +35,12 @@ class PostListView(generics.ListAPIView):
                 },
                 'content': post.content,
                 'image': post.image,
+                'like': post.get_like_count(),
+                'comments': [{
+                    'username': comment.user.username,
+                    'content': comment.content,
+                    'created': comment.created
+                } for comment in post.get_comments()]
             } for post in posts]
         }
 
@@ -57,13 +63,17 @@ class PostView(APIView):
                     'content': post.content,
                     'image': post.image,
                     'like': post.get_like_count(),
-                    'comment': post.get_comment_count(),
+                    'comments': [{
+                        'username': comment.user.username,
+                        'content': comment.content,
+                        'created': comment.created
+                    } for comment in post.get_comments()],
                     'created': post.created
                 }
             }
             return APIResponse({
                 'status': 'ok',
-                'payload': json.dumps(payload)
+                'payload': payload
             })
 
         except Post.DoesNotExist:
@@ -98,17 +108,32 @@ class LikeView(APIView):
 
 
 class CommentListView(generics.ListAPIView):
-    def list(self, request):
-        pass
+    def list(self, request, id):
+        post = Post.objects.get(id=id)
+        comments = Comment.objects.filter(
+            post=post
+        ).order_by('-created')
+
+        payload = [{
+            'id': id,
+            'username': comment.user.username,
+            'content': comment.content,
+            'created': comment.created
+        } for comment in comments]
+
+        return APIResponse({
+            'status': 'ok',
+            'payload': payload
+        })
 
 
 class CommentView(APIView):
-    def post(self, request):
-        data = request.data
-        post = Post.objects.get(id=data.id)
+    def post(self, request, id):
+        post = Post.objects.get(id=id)
         Comment.objects.create(
             user=request.user,
-            post=post
+            post=post,
+            content=request.data['content']
         )
 
         return APIResponse({
