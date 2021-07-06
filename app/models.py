@@ -1,23 +1,13 @@
 from django.db import models
 from enumfields import EnumField
 from .enums import *
-
-# Create your models here.
-
-
-class User(models.Model):
-    id = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=32, unique=True)
-    password = models.CharField(max_length=256, default='')
-
-    class Meta:
-        pass
+from django.contrib.auth.models import User
 
 
 class Subject(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=50)
-    date = models.DateField()
+    date = models.DateField(null=True, default=None)
 
     class Meta:
         pass
