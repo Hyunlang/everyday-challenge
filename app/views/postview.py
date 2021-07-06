@@ -2,6 +2,7 @@ import json
 
 from rest_framework import generics
 from rest_framework.views import APIView
+from rest_framework.authentication import TokenAuthentication
 from ..models import *
 from ..response import APIResponse
 import datetime
@@ -96,11 +97,16 @@ class LikeView(APIView):
         })
 
 
-class CommentListView(generics.ListAPIView)
+class CommentListView(generics.ListAPIView):
     def list(self, request):
-        request.get.GET('')
+        pass
 
 
 class CommentView(APIView):
     def post(self, request):
-        pass
+        data = request.data
+        post = Post.objects.get(id=data.id)
+        Comment.objects.create(
+            user=request.user,
+            post=post
+        )

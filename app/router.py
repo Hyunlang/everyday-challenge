@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'^challenge/?$', ChallengeView.as_view(), name='challengeSpecific'),
     url(r'^posts/?$', PostListView.as_view(), name='postList'),
     url(r'^post/(?P<id>[0-9]+)/?$', PostView.as_view(), name='postSpecific'),
+    url(r'^post/(?P<id>[0-9]+)/like/?$', LikeView.as_view(), name='likePost'),
 ]

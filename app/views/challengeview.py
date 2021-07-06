@@ -1,23 +1,12 @@
 from rest_framework import generics
 from rest_framework.views import APIView
-from rest_framework.authentication import TokenAuthentication
-from django.db.models import Q
 from ..models import *
 from ..enums import *
 from ..response import APIResponse
 import datetime
-import json
 
 
 class ChallengeListView(generics.ListAPIView):
-    authentication_classes = [TokenAuthentication]
-
-    def get_user(self, id):
-        try:
-            return User.objects.get(id=id)
-        except User.DoesNotExist:
-            return None
-
     def list(self, request):
         challenges = Challenge.objects.filter(
             user=request.user,
@@ -48,31 +37,25 @@ class ChallengeListView(generics.ListAPIView):
 
 
 class ChallengeView(APIView):
-    def get_user(self, id):
-        try:
-            return User.objects.get(id=id)
-        except User.DoesNotExist:
-            return None
-
     def get(self, request):
         mychallenge = Challenge.objects.filter(
-            user=self.get_user(request.user.id),
+            user=request.user,
             created__date=datetime.datetime.now().date()
         )
 
         if mychallenge.exists():
             participant = Challenge.objects.filter(
-                subject=mychallenge.subject,
+                subject=mychallenge[0].subject,
                 status=ChallengeStatus.PENDING
             ).count()
             achiever = Challenge.objects.filter(
-                subject=mychallenge.subject,
+                subject=mychallenge[0].subject,
                 status=ChallengeStatus.COMPLETE
             ).count()
 
             return APIResponse({
                 'status': 'ok',
-                'payload': json.dumps({
+                'payload': {
                     'challenge': {
                         'subject': {
                             'title': mychallenge[0].subject.title
@@ -81,7 +64,7 @@ class ChallengeView(APIView):
                         'participant': participant,
                         'achiever': achiever
                     }
-                })
+                }
             })
 
         return APIResponse({
