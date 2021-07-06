@@ -110,3 +110,7 @@ class CommentView(APIView):
             user=request.user,
             post=post
         )
+
+        return APIResponse({
+            'status': 'ok',
+        })
