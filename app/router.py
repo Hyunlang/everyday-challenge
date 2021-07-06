@@ -6,4 +6,6 @@ router = routers.SimpleRouter()
 
 urlpatterns = [
     url(r'^', include(router.urls)),
+    url(r'^subjects/?$', SubjectListView.as_view(), name='subjectList'),
+    url(r'^challenges/?$', ChallengeListView.as_view(), name='challengeList'),
 ]
