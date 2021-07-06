@@ -79,8 +79,12 @@ WSGI_APPLICATION = 'everyday_challenge.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'everyday_challenge',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': '54.180.154.153',
+        'PORT': '5432',
     }
 }
 
