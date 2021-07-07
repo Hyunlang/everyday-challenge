@@ -38,7 +38,14 @@ class PostListCreateView(generics.ListCreateAPIView):
             posts = []
 
         payload = {
-            'posts': [{
+            'posts': []
+        }
+        for post in posts:
+            liked = False
+            if not request.user.is_anonymous:
+                liked = True if Like.objects.filter(user=request.user, post=post).exists() else False
+
+            payload['posts'].append({
                 'id': post.id,
                 'username': post.user.username,
                 'subject': {
@@ -48,13 +55,13 @@ class PostListCreateView(generics.ListCreateAPIView):
                 'image': post.image,
                 'photo': post.photo.url if post.photo else None,
                 'like': post.get_like_count(),
+                'liked': liked,
                 'comments': [{
                     'username': comment.user.username,
                     'content': comment.content,
                     'created': comment.created
                 } for comment in post.get_comments()]
-            } for post in posts]
-        }
+            })
 
         return APIResponse({
             'status': 'ok',
