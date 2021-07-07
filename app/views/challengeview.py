@@ -41,6 +41,14 @@ class ChallengeListView(generics.ListAPIView):
 
 class ChallengeView(APIView):
     def get(self, request):
+        if request.user.is_anonymous:
+            return APIResponse({
+                'status': 'ok',
+                'payload': {
+                    'challenge': None
+                }
+            })
+
         mychallenge = Challenge.objects.filter(
             user=request.user,
             created__date=datetime.datetime.now().date()
