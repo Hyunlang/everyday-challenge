@@ -83,8 +83,29 @@ class PostListCreateView(generics.ListCreateAPIView):
                 challenge.status = 'complete'
                 challenge.save()
 
+                payload = {
+                    'post': {
+                        'id': post.id,
+                        'username': post.user.username,
+                        'subject': {
+                            'title': post.subject.title
+                        },
+                        'content': post.content,
+                        'image': post.image,
+                        'photo': post.photo.url if post.photo else None,
+                        'like': post.get_like_count(),
+                        'comments': [{
+                            'username': comment.user.username,
+                            'content': comment.content,
+                            'created': comment.created
+                        } for comment in post.get_comments()],
+                        'created': post.created
+                    }
+                }
+
                 return APIResponse({
-                    'status': 'ok'
+                    'status': 'ok',
+                    'payload': payload
                 })
             return HttpResponse('Bad Request', status=400)
         return HttpResponse('Unauthorized', status=401)
