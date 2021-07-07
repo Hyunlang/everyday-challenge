@@ -56,8 +56,7 @@ class ChallengeView(APIView):
 
         if mychallenge.exists():
             participant = Challenge.objects.filter(
-                subject=mychallenge[0].subject,
-                status=ChallengeStatus.PENDING
+                subject=mychallenge[0].subject
             ).count()
             achiever = Challenge.objects.filter(
                 subject=mychallenge[0].subject,
