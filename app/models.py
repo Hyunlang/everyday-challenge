@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 from enumfields import EnumField
 from .enums import *
@@ -11,6 +12,20 @@ class Subject(models.Model):
 
     class Meta:
         pass
+
+    def get_participant_count(self):
+        return Challenge.objects.filter(
+            subject=self
+        ).filter(
+            Q(status=ChallengeStatus.PENDING) |
+            Q(status=ChallengeStatus.COMPLETE)
+        ).count()
+
+    def get_complete_count(self):
+        return Challenge.objects.filter(
+            subject=self,
+            status=ChallengeStatus.COMPLETE
+        ).count()
 
 
 class Challenge(models.Model):
