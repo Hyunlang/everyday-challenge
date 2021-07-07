@@ -1,8 +1,10 @@
 from rest_framework import generics
 from rest_framework.views import APIView
+from django.http import HttpResponse
 from ..models import *
 from ..enums import *
 from ..response import APIResponse
+import json
 import datetime
 
 
@@ -74,5 +76,18 @@ class ChallengeView(APIView):
                 'challenge': None
             }
         })
+
+    def post(self, request):
+        if not request.user.is_anonymous:
+            data = json.loads(request.body)
+            user = request.user
+            challenge = Challenge(subject_id=data['subject_id'], user=user)
+            challenge.save()
+
+            return APIResponse({
+                'status': 'ok'
+            })
+
+        return HttpResponse('Unauthorized', status=401)
 
 
