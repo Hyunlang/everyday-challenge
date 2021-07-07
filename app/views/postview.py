@@ -75,7 +75,11 @@ class PostListCreateView(generics.ListCreateAPIView):
                 post = Post(user=user, subject_id=subject_id, content=content, photo=photo)
                 post.save()
 
-                challenge = Challenge.objects.get(user=user, created__date=datetime.date.today())
+                challenge = Challenge.objects.get(
+                    user=user,
+                    subject__id=subject_id,
+                    created__date=datetime.date.today()
+                )
                 challenge.status = 'complete'
                 challenge.save()
 
