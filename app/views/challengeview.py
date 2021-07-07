@@ -36,7 +36,7 @@ class ChallengeListView(generics.ListAPIView):
                     'id': p[0].id,
                     'content': p[0].content,
                     'image': p[0].image,
-                    'photo': p[0].photo if p[0].photo else None
+                    'photo': p[0].photo.url if p[0].photo else None
                 }
             except Post.DoesNotExist:
                 post = None
