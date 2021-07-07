@@ -85,7 +85,7 @@ DATABASES = {
         'NAME': 'everyday_challenge',
         'USER': 'postgres',
         'PASSWORD': 'postgres123',
-        'HOST': '54.180.154.153',
+        'HOST': '3.35.229.0',
         'PORT': '5432',
     }
 }
