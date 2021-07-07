@@ -18,20 +18,39 @@ class ChallengeListView(generics.ListAPIView):
         month = request.GET.get('month', None)
         if year is not None and month is not None:
             challenges = challenges.filter(
-                created__year=year,
-                created__month=month,
+                created__year=int(year),
+                created__month=int(month),
             )
 
+
         payload = {
-            'challenges': [{
+            'challenges': []
+        }
+        for challenge in challenges:
+            try:
+                p = Post.objects.get(
+                    user=request.user,
+                    subject=challenge.subject
+                )
+                post = {
+                    'id': p.id,
+                    'content': p.content,
+                    'image': p.image,
+                    'photo': p.photo if p.photo else None
+                }
+            except Post.DoesNotExist:
+                post = None
+
+            payload['challenges'].append({
                 'subject': {
                     'id': challenge.subject.id,
                     'title': challenge.subject.title
                 },
+                'post': post,
                 'status': challenge.status.value,
                 'created': challenge.created
-            } for challenge in challenges]
-        }
+
+            })
 
         return APIResponse({
             'status': 'ok',

@@ -143,6 +143,16 @@ class LikeView(APIView):
             }
         })
 
+    def delete(self, request, id):
+        Like.objects.filter(
+            user=request.user,
+            post__id=id
+        ).delete()
+
+        return APIResponse({
+            'status': 'ok',
+        })
+
 
 class CommentListView(generics.ListAPIView):
     def list(self, request, id):
