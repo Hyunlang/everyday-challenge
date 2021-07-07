@@ -167,4 +167,5 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     'Host',
     'Pragma',
     'Referer',
+    'Access-Control-Allow-Origin',
 ]
