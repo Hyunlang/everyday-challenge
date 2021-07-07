@@ -35,6 +35,7 @@ class PostListView(generics.ListAPIView):
                 },
                 'content': post.content,
                 'image': post.image,
+                'photo': post.photo.url if post.photo else None,
                 'like': post.get_like_count(),
                 'comments': [{
                     'username': comment.user.username,
@@ -62,6 +63,7 @@ class PostView(APIView):
                     },
                     'content': post.content,
                     'image': post.image,
+                    'photo': post.photo.url if post.photo else None,
                     'like': post.get_like_count(),
                     'comments': [{
                         'username': comment.user.username,
