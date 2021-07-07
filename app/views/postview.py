@@ -25,11 +25,10 @@ class PostListCreateView(generics.ListCreateAPIView):
             challenge = Challenge.objects.filter(
                 created__date=datetime.datetime.now().date()
             )
-
-        if not request.user.is_anonymous:
-            challenge = challenge.filter(
-                user=request.user
-            )
+            if not request.user.is_anonymous:
+                challenge = challenge.filter(
+                    user=request.user
+                )
 
         if challenge.exists():
             posts = Post.objects.filter(
