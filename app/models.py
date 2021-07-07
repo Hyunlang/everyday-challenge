@@ -31,7 +31,7 @@ class Post(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     content = models.CharField(max_length=100)
     image = models.CharField(max_length=500)
-    photo = models.ImageField(upload_to='post/', null=True)
+    photo = models.ImageField(upload_to='post/%Y/%m/%d/', null=True)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:

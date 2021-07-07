@@ -1,5 +1,5 @@
 import json
-
+from django.http import HttpResponse
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
@@ -8,7 +8,7 @@ from ..response import APIResponse
 import datetime
 
 
-class PostListView(generics.ListAPIView):
+class PostListCreateView(generics.ListCreateAPIView):
     def get_user(self, id):
         try:
             return User.objects.get(id=id)
@@ -49,6 +49,29 @@ class PostListView(generics.ListAPIView):
             'payload': payload
         })
 
+    def post(self, request):
+        if not request.user.is_anonymous:
+            # data = json.loads(request.body)
+            data = request.data
+            user = request.user
+            subject_id = data.get('subject_id', None)
+            content = data.get('content', None)
+            # image = data.get('image', None)
+            photo = data.get('photo', None)
+
+            if subject_id and content and photo:
+                post = Post(user=user, subject_id=subject_id, content=content, photo=photo)
+                post.save()
+
+                challenge = Challenge.objects.get(user=user, created__date=datetime.date.today())
+                challenge.status = 'complete'
+                challenge.save()
+
+                return APIResponse({
+                    'status': 'ok'
+                })
+            return HttpResponse('Bad Request', status=400)
+        return HttpResponse('Unauthorized', status=401)
 
 class PostView(APIView):
     def get(self, request, id):
