@@ -39,6 +39,7 @@ class PostListCreateView(generics.ListCreateAPIView):
 
         payload = {
             'posts': [{
+                'id': post.id,
                 'username': post.user.username,
                 'subject': {
                     'title': post.subject.title
@@ -90,6 +91,7 @@ class PostView(APIView):
             post = Post.objects.get(id=id)
             payload = {
                 'post': {
+                    'id': post.id,
                     'username': post.user.username,
                     'subject': {
                         'title': post.subject.title
