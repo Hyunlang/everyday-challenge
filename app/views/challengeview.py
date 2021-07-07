@@ -28,17 +28,20 @@ class ChallengeListView(generics.ListAPIView):
         }
         for challenge in challenges:
             try:
-                p = Post.objects.get(
+                p = Post.objects.filter(
                     user=request.user,
                     subject=challenge.subject
-                )
+                ).order_by('-created')
                 post = {
-                    'id': p.id,
-                    'content': p.content,
-                    'image': p.image,
-                    'photo': p.photo if p.photo else None
+                    'id': p[0].id,
+                    'content': p[0].content,
+                    'image': p[0].image,
+                    'photo': p[0].photo if p[0].photo else None
                 }
             except Post.DoesNotExist:
+                post = None
+
+            except:
                 post = None
 
             payload['challenges'].append({
