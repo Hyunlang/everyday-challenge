@@ -28,7 +28,8 @@ class ChallengeListView(generics.ListAPIView):
                     'id': challenge.subject.id,
                     'title': challenge.subject.title
                 },
-                'status': challenge.status.value
+                'status': challenge.status.value,
+                'created': challenge.created
             } for challenge in challenges]
         }
 
