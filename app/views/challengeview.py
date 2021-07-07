@@ -79,7 +79,7 @@ class ChallengeView(APIView):
 
     def post(self, request):
         if not request.user.is_anonymous:
-            data = json.loads(request.body)
+            data = request.data
             user = request.user
             challenge = Challenge(subject_id=data['subject_id'], user=user)
             challenge.save()
